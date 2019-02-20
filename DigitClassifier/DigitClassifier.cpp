@@ -306,6 +306,11 @@ void train(int& iter)
 
 	for (int i = 0; i < iter; i++)
 	{
+		if (i > 59999)
+		{
+			i = 0;
+		}
+
 		row = fileldr.CSVFileRead("mnist_train.csv", i);
 
 		set_inputs(row);
