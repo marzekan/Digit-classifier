@@ -1,0 +1,4 @@
+﻿  DigitClassifier.cpp
+e:\projects\mnist digit classifier\digitclassifier\digitclassifier\digitclassifier.cpp(132): warning C4244: 'argument': conversion from 'double' to 'const unsigned int', possible loss of data
+e:\projects\mnist digit classifier\digitclassifier\digitclassifier\digitclassifier.cpp(233): warning C4018: '<': signed/unsigned mismatch
+  DigitClassifier.vcxproj -> E:\Projects\MNIST Digit Classifier\DigitClassifier\Debug\DigitClassifier.exe
