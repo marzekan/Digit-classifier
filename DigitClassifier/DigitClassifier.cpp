@@ -13,6 +13,7 @@
 
 #include "FileLoader.h"
 
+// JUST FOR DEBUGGING PURPOSES!
 #define space std::cout << "\n"
 #define print(X) std::cerr << X << "\n"
 // Random weight value for network initialization.
@@ -304,9 +305,13 @@ void train(int& iter)
 
 	init_network();
 
+	// Maximum number of lines in mnist_train.csv file.
+	// When loop reaches end of file, it starts over untill the number of iterations is reached.
+	const int max_lines = 60000;
+
 	for (int i = 0; i < iter; i++)
 	{
-		if (i > 59999)
+		if (i > max_lines)
 		{
 			i = 0;
 		}
@@ -314,16 +319,12 @@ void train(int& iter)
 		row = fileldr.CSVFileRead("mnist_train.csv", i);
 
 		set_inputs(row);
-		//print("inputs set");
 
 		feed_forward();
-		//print("fed forward");
 
 		backpropagation();
-		//print("back-propragated");
 
 		mse = calculate_MSE();
-		//print("MSE calculated");
 
 		if (i % 50 == 0 && i != 0)
 		{
@@ -413,7 +414,7 @@ int main()
 
 	int train_iter;
 
-	std::cout << "Insert number of leaning iterations: ";
+	std::cout << "Insert number of learning iterations: ";
 	std::cin >> train_iter;
 
 	double completion_time = train_iter * 1.55 * 0.8;
