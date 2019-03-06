@@ -2,7 +2,7 @@
 
 ## How to
 
-For app to work you have to download and add the Train and Test .csv files to DigitClassifier file folder.
+For app to work you have to download and add the Train and Test .csv files to the same file where .exe file is.
 
 Test and Train sets downloaded from this site: https://pjreddie.com/projects/mnist-in-csv/
 
