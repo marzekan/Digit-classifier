@@ -38,6 +38,11 @@ class NeuralNetwork
 
 // Variables
 public:
+	int epochs{ 1 }; // Number of training epochs, set to 1.
+ 
+	int batch_size{ 2000 }; // Number of lines to read from file in one batch.
+
+	int max_lines = 0; // Maximum number of rows in mnist_train.csv file.
 
 private:
 	const int input_n{ 785 };
@@ -192,9 +197,15 @@ private:
 	}
 
 
+
 	// calculate Adam
+	void calculate_adam()
+	{
 
 
+	}
+
+	
 	// Network initialization.
 	void init_network()
 	{
@@ -304,13 +315,94 @@ private:
 		return std::distance(outputs->begin(), iter);
 	}
 
+	// Prints out given vector in a for-each loop.
+	void print_vector(std::vector<char>& arr)
+	{
+		for (auto i : arr)
+		{
+			std::cout << i;
+		}
 
+		std::cout << "\n";
+	}
+
+	// Writes out progress bar of network training to console.
+	void write_progress(int& iter)
+	{
+		std::vector<char> progressBar {'-', '-', '-', '-', '-', '-', '-', '-', '-', '-'};
+
+		print_vector(progressBar);
+
+		for (int i = 0; i < iter; i++)
+		{
+			if (int(i == (0.1 * iter)))
+			{
+				progressBar.at(0) = '=';
+				print_vector(progressBar);
+				
+			}
+			else if (int(i == (0.2 * iter)))
+			{
+				progressBar.at(1) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.3 * iter)))
+			{
+				progressBar.at(2) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.4 * iter)))
+			{
+				progressBar.at(3) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.5 * iter)))
+			{
+				progressBar.at(4) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.6 * iter)))
+			{
+				progressBar.at(5) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.7 * iter)))
+			{
+				progressBar.at(6) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.8 * iter)))
+			{
+				progressBar.at(7) = '=';
+				print_vector(progressBar);
+			}
+			else if (int(i == (0.9 * iter)))
+			{
+				progressBar.at(8) = '=';
+				print_vector(progressBar);
+			}
+			else if (i == (iter-1))
+			{
+				progressBar.at(9) = '=';
+				print_vector(progressBar);
+			}
+		}
+	}
 
 public:
-	NeuralNetwork();
+	NeuralNetwork(int& epochs_in, int& batch_in, int& maxLines)
+	{
+
+		epochs = epochs_in;
+		batch_size = batch_in;
+		max_lines = maxLines;
+
+		std::cout << "NNetwork created!\n";
+
+	}
 
 	// Training the neural network until the criteria is set.
-	void train(int& iter)
+	void train()
 	{
 		auto start = timeNow();
 
@@ -323,38 +415,54 @@ public:
 		std::vector<double> row;
 
 		init_network();
+		
+		// Number of iterations in each epoch. Calculated by deviding maximum number of rows in file with the batch size.
+		int iter = (max_lines / batch_size) + 1;
+		//int iter = 2;
 
-		// Maximum number of lines in mnist_train.csv file.
-		// When loop reaches end of file, it starts over untill the number of iterations is reached.
-		const int max_lines = 59998;
-
-		for (int i = 0; i < iter; i++)
+		for (int i = 0; i < epochs; i++)
 		{
-			if (i > max_lines)
+			/*
+			*
+			*	ZAMJENIT ITER SA PRAVIM BROJEVIMA!!
+			*
+			*/
+
+			for (int k = 0; k < iter; k++)
 			{
-				i = 0;
+				if (k != 0 && k == iter - 1)
+				{
+					batch_size = max_lines % k;
+				}
+
+				row = fileldr.read_batch_CSV("mnist_train.csv", batch_size, k);
+
+				for (int j = 0; j < row.size(); j++)
+				{
+					set_inputs(row);
+
+					feed_forward();
+
+					backpropagation();
+
+					mse = calculate_MSE();
+
+					//int bb = j * (k + 1);
+
+					//write_progress(bb);
+
+					if (j % 100 == 0 && j != 0)
+					{
+						std::cout << "Training iteration: " << j * (iter + 1)<< "...\n";
+					}
+				}
 			}
-
-			row = fileldr.CSVFileRead("mnist_train.csv", i);
-
-			set_inputs(row);
-
-			feed_forward();
-
-			backpropagation();
-
-			mse = calculate_MSE();
-
-			if (i % 50 == 0 && i != 0)
-			{
-				std::cout << "epoch: " << i << "...\n";
-			}
-
 		}
-		/*int i = 0;
+
+		/*
 		do
 		{
-			row = fileldr.CSVFileRead("mnist_train.csv", i);
+			row = fileldr.read_CSV("mnist_train.csv", i);
 
 			set_inputs(row);
 			//print("inputs set");
@@ -388,7 +496,7 @@ public:
 		FileLoader fl;
 		std::vector<double> row;
 
-		row = fl.CSVFileRead("mnist_test.csv", i);
+		row = fl.read_CSV("mnist_test.csv",i);
 
 		set_inputs(row);
 
@@ -417,7 +525,7 @@ public:
 	}
 
 	// Saves weights of current running network.
-	void SaveSession()
+	void save_network()
 	{
 		// FileLoader....
 	}
@@ -425,11 +533,15 @@ public:
 	// Tests network for a given number of iterations
 	void automated_testing(int& iter)
 	{
-		// iter = 1000
+		// iter = 10.000
 		// returns percetage of correctly classified digits.
 	}
 	
 
-	~NeuralNetwork();
+	~NeuralNetwork()
+	{
+		std::cout << "Network deleted.\n";
+		Delete();
+	};
 };
 

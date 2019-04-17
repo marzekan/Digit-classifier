@@ -24,10 +24,25 @@ private:
 		return std::ctime(&in_time_t);
 	}
 
+
 public:
 	// Methods
 	FileLoader();
 	
+	// Gets the maximum number of rows from training file.
+	int max_lines(const char* filename)
+	{
+		std::ifstream file(filename);
+		std::string line;
+		int maxR = 0;
+
+		while (std::getline(file, line))
+		{
+			maxR++;
+		}
+
+		return maxR;
+	}
 
 	//Save function. Saves weights to .txt file for later usage.
 	void Save_weights(std::vector<std::vector<double>>& hidden_w, std::vector<std::vector<double>>& output_w)
@@ -75,8 +90,7 @@ public:
 		// stavit linije fajla u vektore.
 	}
 
-	// Reads one .csv file line and returnes vector of values.
-	std::vector<double> CSVFileRead(const char* filename, int& it)
+	std::vector<double> read_CSV(const char* filename, int& iter)
 	{
 		std::ifstream file(filename);
 
@@ -85,15 +99,15 @@ public:
 			std::cerr << "File cannot be opened..." << "\n";
 			return {};
 		}
-		else {
-			
+		else
+		{
 			std::vector<double> data_list;
 			std::string line;
 
 			char delimiter = ',';
 
 			// Gets one line from file.
-			for (int i = 0; i <= it; i++)
+			for (int i = 0; i < iter; i++)
 			{
 				getline(file, line);
 			}
@@ -105,6 +119,7 @@ public:
 			// Saves every value as a seperate vector member.
 			while (getline(ss, datapoint, delimiter))
 			{
+				// Converts elements of vector from string to double.
 				data_list.emplace_back(std::stod(datapoint));
 			}
 
@@ -112,6 +127,43 @@ public:
 		}
 	}
 
+	// Reads one .csv file line and returnes vector of values.
+	std::vector<double> read_batch_CSV(const char* filename, int& batch_size, int& iter)
+	{
+		std::ifstream file(filename);
+
+		if (!file.is_open())
+		{
+			std::cerr << "File cannot be opened..." << "\n";
+			return {};
+		}
+		else {
+			
+			std::vector<double> data_list( batch_size );
+			std::string line;
+
+			char delimiter = ',';
+
+			// Gets one line from file.
+			for (int i = 0; i < (batch_size*iter); i++)
+			{
+				getline(file, line);
+			}
+
+			// Converting string (line) to stringstream.
+			std::istringstream ss(line);
+			std::string datapoint;
+
+			// Saves every value as a seperate vector member.
+			while (getline(ss, datapoint, delimiter))
+			{
+				// Converts elements of vector from string to double.
+				data_list.emplace_back(std::stod(datapoint));
+			}
+
+			return data_list;
+		}
+	}
 
 	~FileLoader();
 };

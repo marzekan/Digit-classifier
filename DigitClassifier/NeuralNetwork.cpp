@@ -2,15 +2,13 @@
 #include "NeuralNetwork.h"
 
 
-NeuralNetwork::NeuralNetwork()
-{
-	std::cout << "NNetwork created!\n";
-
-}
-
-
-NeuralNetwork::~NeuralNetwork()
-{
-	std::cout << "Network deleted.\n";
-	Delete();
-}
+//NeuralNetwork::NeuralNetwork(int& epochs_in, int& batch_in, int& maxLines)
+//{
+//
+//}
+//
+//
+//NeuralNetwork::~NeuralNetwork()
+//{
+//
+//}

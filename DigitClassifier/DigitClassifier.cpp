@@ -23,19 +23,39 @@ int main()
 {
 	system("title MNIST Digit Classifier");
 
-	int train_iter;
+	/*
+	*	TODO
+	*	- add variable "epoch" - nums of training epochs
+	*	- add variable "batchSize" - number of rows to read from dataFile
+	*/
 
-	std::cout << "Insert number of learning iterations: ";
-	std::cin >> train_iter;
+	int epochs = 1;
+	int batchSize = 2000;
 
-	double completion_time = train_iter * 1.55 * 0.8;
-	std::cout << "Estimated training time: " << completion_time << "s\n";
+	//std::cout << "Insert number of epochs: ";
+	//std::cin >> epochs;
+
+	//std::cout << "Insert batch size:";
+	//std::cin >> batchSize;
+
+	
+
+	//double completion_time = train_iter * 1.55 * 0.8;
+	//std::cout << "Estimated training time: " << completion_time << "s\n";
 
 	system("pause");
+	
+	int MAX_LINES = 59998;
+	
+	//{
+	//	FileLoader fl;
+	//	MAX_LINES = fl.max_lines("mnist_train.csv");
+	//}
 
-	NeuralNetwork nn;
 
-	nn.train(train_iter);
+	NeuralNetwork nn(epochs,batchSize,MAX_LINES);
+
+	nn.train();
 
 	space;
 	space;
